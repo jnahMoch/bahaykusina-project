@@ -1,0 +1,215 @@
+import 'package:flutter/material.dart';
+import 'login_page.dart';
+
+class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({super.key});
+
+  static const Color primaryOrange = Color(0xFFFF6B00);
+  static const Color secondaryOrange = Color.fromARGB(255, 234, 99, 3);
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final dynamicLogoSize = screenWidth * 0.18;
+    final dynamicPadding = dynamicLogoSize * 0.15;
+
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [primaryOrange, secondaryOrange],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          // 1. Wrap with SingleChildScrollView to prevent overflow
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              // 2. This constraint ensures the content stays centered if the screen is large
+              constraints: BoxConstraints(
+                minHeight:
+                    MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 20,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // ---------- LOGO WIDGET ----------
+                    Container(
+                      padding: EdgeInsets.all(dynamicPadding),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/bahay_kusina_logo.png',
+                          width: 130,
+                          height: 130,
+                          fit: BoxFit.contain,
+                          // Added error builder in case image is missing during testing
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(
+                                Icons.restaurant,
+                                size: 80,
+                                color: Colors.white,
+                              ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    // ---------- TITLE & SUBTITLE ----------
+                    const Text(
+                      "BahayKusina",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    const Text(
+                      "Homemade Meals, Delivered Fresh",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      "Supporting local home cooks and bringing\nauthentic Filipino cuisine to your doorstep",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white70, fontSize: 13),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    // ---------- INFO CARDS ----------
+                    const _InfoCard(
+                      icon: Icons.person,
+                      title: "For Customers",
+                      desc:
+                          "Discover delicious homemade meals\nfrom local vendors",
+                    ),
+                    const SizedBox(height: 15),
+                    const _InfoCard(
+                      icon: Icons.store,
+                      title: "For Vendors",
+                      desc:
+                          "Sell your homemade packages and\ngrow your business",
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    // ---------- GET STARTED BUTTON ----------
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const LoginPage(initialRole: "Customer"),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          backgroundColor: Colors.white,
+                          foregroundColor: primaryOrange,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Get Started",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+                    const Text(
+                      "Made with love for Filipino communities",
+                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String desc;
+
+  const _InfoCard({
+    required this.icon,
+    required this.title,
+    required this.desc,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.25),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.white, size: 24),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  desc,
+                  style: const TextStyle(fontSize: 13, color: Colors.white70),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
